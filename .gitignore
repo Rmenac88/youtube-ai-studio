@@ -1,0 +1,24 @@
+# Dependencies
+node_modules/
+
+# Environment / secrets — never commit
+.env
+.env.local
+.env.*.local
+
+# Remotion / video output — too heavy for git, regenerate from data/
+video/render/*
+!video/render/.gitkeep
+
+# Large generated assets (voice, music, stock footage) — store externally,
+# reference by ID in data/projects/<slug>/, not by committing the binary
+assets/audio/*
+assets/music/*
+assets/video/*
+!assets/**/.gitkeep
+
+# OS / editor
+.DS_Store
+*.log
+.vscode/
+.idea/

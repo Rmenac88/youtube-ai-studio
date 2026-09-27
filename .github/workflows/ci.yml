@@ -1,0 +1,26 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  remotion-typecheck:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: video/remotion
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: video/remotion/package-lock.json
+      - run: npm ci
+      - run: npm run typecheck
+
+  # V2 (Automation): add a render job here once the pipeline is stable —
+  # deliberately left out of V0 to avoid CI minutes spent on a moving target.

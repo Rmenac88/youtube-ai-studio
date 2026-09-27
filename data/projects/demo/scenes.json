@@ -1,0 +1,32 @@
+{
+  "id": "demo",
+  "fps": 30,
+  "width": 1920,
+  "height": 1080,
+  "scenes": [
+    {
+      "id": "scene_001_intro",
+      "duration": 3,
+      "narration": "Bienvenue dans youtube-ai-studio.",
+      "text": { "content": "youtube-ai-studio", "position": "center" },
+      "animation": { "type": "fade-scale", "durationInFrames": 20 },
+      "background": "#0b0e14"
+    },
+    {
+      "id": "scene_002_pipeline",
+      "duration": 3,
+      "narration": "Ceci est un rendu de test du pipeline Remotion, piloté par des données.",
+      "text": { "content": "Piloté par des données (JSON) →", "position": "center" },
+      "animation": { "type": "slide-up", "durationInFrames": 15 },
+      "background": "#11151f"
+    },
+    {
+      "id": "scene_003_outro",
+      "duration": 2,
+      "narration": "Prêt pour la V1.",
+      "text": { "content": "V0 — Foundation ✓", "position": "center" },
+      "animation": { "type": "fade", "durationInFrames": 15 },
+      "background": "#0b0e14"
+    }
+  ]
+}
