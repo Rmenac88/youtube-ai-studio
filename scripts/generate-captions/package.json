@@ -1,0 +1,14 @@
+{
+  "name": "generate-captions",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Transcribes a voice recording locally (Whisper) into timed captions for a video project — never sends the audio anywhere.",
+  "type": "module",
+  "scripts": {
+    "generate": "node generate.mjs"
+  },
+  "dependencies": {
+    "@remotion/captions": "4.0.529",
+    "@remotion/install-whisper-cpp": "4.0.529"
+  }
+}
