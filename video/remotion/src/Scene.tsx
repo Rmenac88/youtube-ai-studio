@@ -1,6 +1,7 @@
 import React from "react";
 import {
   AbsoluteFill,
+  Audio,
   Img,
   OffthreadVideo,
   interpolate,
@@ -11,6 +12,7 @@ import {
 } from "remotion";
 import type { Scene as SceneData } from "./types";
 import { fontFamily } from "./fonts";
+import { colors, grade, type as typeTokens } from "./tokens";
 
 /**
  * Generic scene renderer: every scene on screen is produced by this one
@@ -20,7 +22,7 @@ import { fontFamily } from "./fonts";
  */
 export const Scene: React.FC<{ scene: SceneData }> = ({ scene }) => {
   const frame = useCurrentFrame();
-  const { fps } = useVideoConfig();
+  const { fps, durationInFrames } = useVideoConfig();
   const entranceFrames = scene.animation.durationInFrames ?? 20;
 
   const progress = spring({
@@ -48,19 +50,45 @@ export const Scene: React.FC<{ scene: SceneData }> = ({ scene }) => {
       ? "flex-end"
       : "center";
 
+  // Ken Burns: a slow, constant zoom across the whole scene — independent
+  // of the text entrance animation above, which only covers the first
+  // `entranceFrames` frames. Defaults to a gentle zoom-in for images
+  // (most common), off for video (already has its own motion).
+  const kenBurns = scene.media?.type === "image" ? scene.media.kenBurns ?? "in" : "none";
+  const kenBurnsScale =
+    kenBurns === "none"
+      ? 1
+      : interpolate(
+          frame,
+          [0, durationInFrames],
+          kenBurns === "in" ? [1, 1.08] : [1.08, 1],
+          { extrapolateLeft: "clamp", extrapolateRight: "clamp" }
+        );
+
   return (
-    <AbsoluteFill style={{ backgroundColor: scene.background ?? "#0b0e14" }}>
-      {scene.media?.type === "image" ? (
-        <Img
-          src={staticFile(scene.media.src)}
-          style={{ width: "100%", height: "100%", objectFit: "cover" }}
-        />
-      ) : scene.media?.type === "video" ? (
-        <OffthreadVideo
-          src={staticFile(scene.media.src)}
-          muted={scene.media.muted ?? false}
-          style={{ width: "100%", height: "100%", objectFit: "cover" }}
-        />
+    <AbsoluteFill style={{ backgroundColor: scene.background ?? colors.backgroundDark }}>
+      {scene.media ? (
+        <AbsoluteFill
+          style={{
+            // Unifying grade so webcam / stock / AI images don't look like
+            // three different sources cut together (§ audit: étalonnage).
+            filter: `contrast(${grade.contrast}) saturate(${grade.saturate}) brightness(${grade.brightness})`,
+            transform: `scale(${kenBurnsScale})`,
+          }}
+        >
+          {scene.media.type === "image" ? (
+            <Img
+              src={staticFile(scene.media.src)}
+              style={{ width: "100%", height: "100%", objectFit: "cover" }}
+            />
+          ) : (
+            <OffthreadVideo
+              src={staticFile(scene.media.src)}
+              muted={scene.media.muted ?? false}
+              style={{ width: "100%", height: "100%", objectFit: "cover" }}
+            />
+          )}
+        </AbsoluteFill>
       ) : null}
 
       {/* Scrim: keeps text legible over media without hiding it entirely —
@@ -71,7 +99,7 @@ export const Scene: React.FC<{ scene: SceneData }> = ({ scene }) => {
           style={{
             background:
               scene.text.position === "lower-third"
-                ? "linear-gradient(to top, rgba(0,0,0,0.65), rgba(0,0,0,0) 45%)"
+                ? `linear-gradient(to top, ${colors.scrimStart}, ${colors.scrimEnd} 45%)`
                 : "linear-gradient(to bottom, rgba(0,0,0,0.35), rgba(0,0,0,0.15) 30%, rgba(0,0,0,0.35))",
           }}
         />
@@ -85,9 +113,9 @@ export const Scene: React.FC<{ scene: SceneData }> = ({ scene }) => {
             style={{
               opacity,
               transform,
-              color: "#f5f6f8",
+              color: colors.text,
               fontFamily,
-              fontSize: 72,
+              fontSize: typeTokens.sizes.title,
               fontWeight: 600,
               textAlign: "center",
               letterSpacing: -1,
@@ -98,6 +126,13 @@ export const Scene: React.FC<{ scene: SceneData }> = ({ scene }) => {
           </div>
         ) : null}
       </AbsoluteFill>
+
+      {scene.voiceover ? (
+        <Audio
+          src={staticFile(scene.voiceover.src)}
+          volume={scene.voiceover.volume ?? 1}
+        />
+      ) : null}
     </AbsoluteFill>
   );
 };

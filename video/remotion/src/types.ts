@@ -32,6 +32,12 @@ export type MediaConfig = {
   src: string;
   /** Video only: mute the clip's own audio (e.g. b-roll under narration). */
   muted?: boolean;
+  /**
+   * Slow, subtle zoom over the scene's duration (Ken Burns) — gives a
+   * static image some life without a generic "AI" animation. Ignored for
+   * video media (it already moves).
+   */
+  kenBurns?: "in" | "out" | "none";
 };
 
 export type Scene = {
@@ -40,6 +46,13 @@ export type Scene = {
   duration: number;
   /** Voiceover / narration line for this scene (also drives subtitles). */
   narration: string;
+  /**
+   * The actual recorded voice-over audio for this scene, path relative to
+   * assets/ (e.g. "audio/scene_003_outro.wav"). Without this, `narration`
+   * is just text — nothing plays. Pair with scripts/sync-scene-durations.mjs
+   * to keep `duration` matched to the real recording.
+   */
+  voiceover?: { src: string; volume?: number };
   text?: TextConfig;
   animation: AnimationConfig;
   /** Background media (image/video). Takes priority over `background`. */
@@ -61,4 +74,11 @@ export type VideoProject = {
    * video, only for this demo project.
    */
   captions?: { text: string; startMs: number; endMs: number }[];
+  /**
+   * Background music spanning the whole video, mixed low under the
+   * voice-overs (see tokens.ts musicVolume). Path relative to assets/.
+   * Royalty-free — you provide the file (e.g. YouTube Audio Library),
+   * nothing here fetches or generates music.
+   */
+  music?: { src: string; volume?: number };
 };
