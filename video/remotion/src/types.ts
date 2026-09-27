@@ -54,4 +54,11 @@ export type VideoProject = {
   width: number;
   height: number;
   scenes: Scene[];
+  /**
+   * Burned-in subtitles for the whole video, timed in absolute
+   * milliseconds from the start. Generated from a real voice recording by
+   * scripts/generate-captions (Whisper) — never hand-written for a real
+   * video, only for this demo project.
+   */
+  captions?: { text: string; startMs: number; endMs: number }[];
 };

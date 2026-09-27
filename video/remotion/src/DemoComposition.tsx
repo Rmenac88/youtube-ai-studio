@@ -1,27 +1,41 @@
 import React from "react";
-import { Series } from "remotion";
+import { AbsoluteFill } from "remotion";
+import { TransitionSeries, linearTiming } from "@remotion/transitions";
+import { fade } from "@remotion/transitions/fade";
 import { Scene } from "./Scene";
+import { Captions } from "./Captions";
 import type { VideoProject } from "./types";
+import { TRANSITION_FRAMES } from "./constants";
 
 /**
- * Sequences a VideoProject's scenes back to back. This composition never
- * changes per-video — only the data it's fed (see Root.tsx / scenes.json)
- * changes. That's the whole point of the data-driven approach in the audit
- * (§10): editing text, timing, or colors means editing JSON, not this file.
+ * Sequences a VideoProject's scenes with a crossfade between each pair, and
+ * overlays burned-in captions (if the project has any) across the whole
+ * thing. This composition never changes per-video — only the data it's fed
+ * (see Root.tsx / scenes.json) changes.
  */
 export const DemoComposition: React.FC<{ project: VideoProject }> = ({
   project,
 }) => {
   return (
-    <Series>
-      {project.scenes.map((scene) => (
-        <Series.Sequence
-          key={scene.id}
-          durationInFrames={Math.round(scene.duration * project.fps)}
-        >
-          <Scene scene={scene} />
-        </Series.Sequence>
-      ))}
-    </Series>
+    <AbsoluteFill>
+      <TransitionSeries>
+        {project.scenes.map((scene, index) => (
+          <React.Fragment key={scene.id}>
+            <TransitionSeries.Sequence
+              durationInFrames={Math.round(scene.duration * project.fps)}
+            >
+              <Scene scene={scene} />
+            </TransitionSeries.Sequence>
+            {index < project.scenes.length - 1 ? (
+              <TransitionSeries.Transition
+                presentation={fade()}
+                timing={linearTiming({ durationInFrames: TRANSITION_FRAMES })}
+              />
+            ) : null}
+          </React.Fragment>
+        ))}
+      </TransitionSeries>
+      {project.captions ? <Captions captions={project.captions} /> : null}
+    </AbsoluteFill>
   );
 };

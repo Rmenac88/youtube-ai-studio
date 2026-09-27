@@ -36,5 +36,10 @@
       "animation": { "type": "fade", "durationInFrames": 15 },
       "background": "#0b0e14"
     }
+  ],
+  "captions": [
+    { "text": "Bienvenue dans youtube-ai-studio", "startMs": 300, "endMs": 2800 },
+    { "text": "Sous-titres brûlés, générés par script", "startMs": 3200, "endMs": 5800 },
+    { "text": "Transitions en fondu entre les scènes", "startMs": 6200, "endMs": 8800 }
   ]
 }

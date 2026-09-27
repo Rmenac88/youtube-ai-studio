@@ -10,6 +10,7 @@ import {
   useVideoConfig,
 } from "remotion";
 import type { Scene as SceneData } from "./types";
+import { fontFamily } from "./fonts";
 
 /**
  * Generic scene renderer: every scene on screen is produced by this one
@@ -85,8 +86,7 @@ export const Scene: React.FC<{ scene: SceneData }> = ({ scene }) => {
               opacity,
               transform,
               color: "#f5f6f8",
-              fontFamily:
-                "Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
+              fontFamily,
               fontSize: 72,
               fontWeight: 600,
               textAlign: "center",
