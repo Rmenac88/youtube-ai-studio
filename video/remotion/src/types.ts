@@ -20,6 +20,20 @@ export type AnimationConfig = {
   durationInFrames?: number;
 };
 
+/**
+ * Background media for a scene: webcam footage, an AI-generated image, or
+ * stock footage/photo — all three are just a file dropped in assets/ and
+ * referenced here. `src` is a path relative to the repo's assets/ folder
+ * (e.g. "images/scene_004_bg.jpg" for assets/images/scene_004_bg.jpg),
+ * never an absolute filesystem path.
+ */
+export type MediaConfig = {
+  type: "image" | "video";
+  src: string;
+  /** Video only: mute the clip's own audio (e.g. b-roll under narration). */
+  muted?: boolean;
+};
+
 export type Scene = {
   id: string;
   /** Duration of this scene, in seconds. */
@@ -28,7 +42,9 @@ export type Scene = {
   narration: string;
   text?: TextConfig;
   animation: AnimationConfig;
-  /** Background color while no real background asset pipeline exists yet. */
+  /** Background media (image/video). Takes priority over `background`. */
+  media?: MediaConfig;
+  /** Flat background color, used when there's no media yet (e.g. this demo). */
   background?: string;
 };
 
