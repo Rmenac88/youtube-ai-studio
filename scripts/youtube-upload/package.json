@@ -1,0 +1,13 @@
+{
+  "name": "youtube-upload",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Uploads a rendered video to YouTube using the refresh token minted by scripts/youtube-auth. Reads credentials from environment variables — never from a committed file.",
+  "type": "module",
+  "scripts": {
+    "upload": "node upload.mjs"
+  },
+  "dependencies": {
+    "googleapis": "182.0.0"
+  }
+}
